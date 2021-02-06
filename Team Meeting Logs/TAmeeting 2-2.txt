@@ -1,0 +1,7 @@
+explaining project ideas
+project should be more focused on building the program rather than analyzing stock
+middle layer/ data source / wont need to publish data / database can be an api
+make sure to have to datasource/ source polygon
+fall back - creating a dashboard for the database, still doing the datat processing stuff, dashboard where to dry trade stocks and track
+dry trading, datasource, project milestone
+continuing discussion on what we can do for project, numer ai

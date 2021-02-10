@@ -1,3 +1,5 @@
+Minutes: 75 mins
+
 explaining project ideas
 project should be more focused on building the program rather than analyzing stock
 middle layer/ data source / wont need to publish data / database can be an api

@@ -1,0 +1,38 @@
+Meeting 3: 25 Minutes
+
+Wire Frames
+
+Done with node in week 9 (March 8th) - we should know everything to build website
+
+Up until then, its difficult to make tasks and things - we can start by builing layers such as login page in HTML, when we do node we can do slices.
+
+Once we can start building features, start right away because HTML and wireframes wont cut it.
+
+Gira Layout:
+  * In backlog, have amount of sprints and do issues within each sprint.
+  * Ex. Homepage - imagine it is our first sprint, but the node part wont come until later.
+  * There needs to be a sequence of sprints that lead us to prioject completion.
+  * We can edit the sprints an user stories, but the project plan must represent the timeline to be done on time. (These timelines are tenetive...)
+  * Epics are going to split up representing our sprints. The sprints will have everything.
+  * 
+  
+ In the readme, there must be a description of where everything is, how to run the code.. etc.
+ 
+ 
+ From lab 1, Archtecture should be done in lucidchart - we need to keep updating them and keep using them for lab 6. 
+ It should have actual archatecture like an external server, where we get stocks from, etc. 
+ There is a table on canvas where we can find examples of archatecture diagram. Project tools and resources under week 2
+ 
+ 
+ Reddit, Firebase and some stock API are things we wont cover in class, so we should note them and post the learning process on git.
+ 
+ Under Resources in the README (I spent time learning firebase), post some links in there.
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+  

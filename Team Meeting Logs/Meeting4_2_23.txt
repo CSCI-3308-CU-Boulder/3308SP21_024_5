@@ -1,5 +1,5 @@
 2-23
-
+30 minutes
 Milestone 3 not really due the 8th
 milestone 3 due the 8th but a demo is due next tuesday march 2nd
 Get a few UI features working
@@ -15,3 +15,9 @@ Discussed working feature
 Database connection discussion
 Start with base page, then nav bar
 Jira - dates in the name of the sprint
+
+
+dashboard - avery
+firebase - john
+google sign in /sign in page- xiang
+nav bar /jira - thomas

@@ -1,0 +1,17 @@
+2-23
+
+Milestone 3 not really due the 8th
+milestone 3 due the 8th but a demo is due next tuesday march 2nd
+Get a few UI features working
+Discussed jira and time management
+
+
+Features for demo:
+login page
+landing page
+database
+
+Discussed working feature
+Database connection discussion
+Start with base page, then nav bar
+Jira - dates in the name of the sprint

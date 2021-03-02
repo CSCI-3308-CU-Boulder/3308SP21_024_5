@@ -56,7 +56,7 @@
           database.ref("users/" + authResult.user.uid).set({
             name: authResult.user.displayName
           }, function(e) {
-            window.location.href = "../databaseREAL.html"
+            window.location.href = "../dashboardREAL.html"
           });
           return false;
         },

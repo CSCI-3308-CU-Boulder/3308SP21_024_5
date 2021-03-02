@@ -55,15 +55,17 @@
           console.log(authResult);
           database.ref("users/" + authResult.user.uid).set({
             name: authResult.user.displayName
+          }, function(e) {
+            window.location.href = "../databaseREAL.html"
           });
-          return true;
+          return false;
         },
         uiShown: function() {
 
         }
       },
       signInFlow: 'popup',
-      signInSuccessUrl: '../dashboardREAL.html',
+      // signInSuccessUrl: 'success',
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID
       ],

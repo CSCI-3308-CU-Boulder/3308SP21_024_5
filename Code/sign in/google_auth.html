@@ -53,6 +53,9 @@
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
           document.getElementById("firebase-ui").style.display = "none";
           console.log(authResult);
+          database.ref("users/" + authResult.user.uid).set({
+            name: authResult.user.displayName
+          });
           return true;
         },
         uiShown: function() {

@@ -1,0 +1,17 @@
+Notes for 3/2: 5:16 - 5:38
+Minutes - 22
+
+Update diagram with node and JS
+
+Showed four features
+
+Update candlestick page
+Recomend plotly.js
+
+Have we figured out what will be held in database yet? - Basic user data, stock data, account data saved in the database
+
+By next tuesday plan on having schema for the database implemented so once we start node we can continue 
+
+
+
+

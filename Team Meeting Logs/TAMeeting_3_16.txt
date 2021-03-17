@@ -1,0 +1,26 @@
+TA Meeting 3/16
+5:15 start time - 5:41  
+
+Discussed reasoning behind switching to Finnhub 5:15 - 5:28
+	- Discussed work being done on the candlestick page
+	- Troubleshooting candlestick page
+
+5:28 What have we done over the last week or any questions about milestone 4
+	-John working on some database
+	-Reddit implementation, getting JSON data implemented
+
+Hows milestone 4 going
+	- Finalize design
+	- Finish document
+	- Reddit not calling your backend, firebase, finnhub going to front end 
+	- More detailed and fixed architecture diagram
+	- using inline javascript
+	- Discussed APIs directly to client side
+	- Benefits from using node
+
+
+
+
+
+
+

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.0.2/echarts.min.js" integrity="sha512-t9GZbGKCH5MuYUFsq5AdrhllT0kdnc2fNMizKDgLXBBXgHP2dXxjRPOzYJauAXW9OXLlSYELUqWD30k7cb0Mkg==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+		<title>stonkbzz</title>
+	</head>
+	<body>
+		<div id="main" style="width: 800px;height: 600px; margin:0 auto;" ></div>
+        <style>
+            canvas{
+                border: 1px;
+            }
+        </style>
+		
+		<script type="text/javascript"></script>
+        <script>
+
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+            var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl, option)
+            })
+
+
+            var date = [1,2,3,4]
+                            //open, close, highest, lowest
+            var stock_data = [[20, 34, 10,38],
+                            [40, 35, 30, 50],
+                            [31, 38, 33, 44],
+                            [38, 15, 5, 42]]
+			const myChart = echarts.init(document.getElementById('main'));
+            myChart.resize({
+                width: 800,
+                height: 600
+            })
+			 option = {
+				toolbox: { feature: { saveAsImage: {} } },
+				xAxis: { type: 'category', data: date },
+				yAxis: { type: 'value' },
+				series: [
+					{
+						data: stock_data,
+						type: 'k',
+					},
+				],
+			};
+			myChart.setOption(option);
+            var to_cancel //stop loop running forever
+            var sell_price;
+            var buy_price;
+            //generate random data and plot
+            function painting(){
+                var temp = []
+                for(i = 0; i < 4; i++){
+                    temp.push(Math.random()*100)
+                }
+                sell_price = temp[2]//always sell at highest price
+                buy_price = temp[0]
+                stock_data.push(temp)
+                date.push(date[date.length-1] +1)
+                //setTimeout(myChart.setOption(option), 2000)
+                option = {
+                    toolbox: { feature: { saveAsImage: {} } },
+                    xAxis: { type: 'category', data: date },
+                    yAxis: { type: 'value' },
+                    series: [
+                        {
+                        data: stock_data,
+                        type: 'k',
+                    },
+                    ],
+                };
+                myChart.setOption(option);
+            }
+            //start buying stock, plot starts generated 
+            function startLoop(){
+                to_cancel = setInterval(painting,500)
+
+            }   
+            //sell the stock, painting stops
+            function endLoop(){
+                clearInterval(to_cancel)
+                calProfit()
+            }
+            //calculate the profit
+            function calProfit(){
+                profit = 0
+                temp = document.getElementById("user-amount").value
+                if(!temp){
+                    amount = 1000
+                }else{
+                    amount = temp
+                }
+                var profit = amount * (sell_price - buy_price)
+                document.getElementById("output_profit").innerHTML = profit.toFixed(2) + "$"
+            }
+		</script>
+        <div class=container style="width: 600px;height: 200px">
+            <div class"w-50">
+                <div class="input-group mb-3" >
+                    <span class="input-group-text" id="input-amount">Amount</span>
+                    <input type="text" class="form-control" id="user-amount" placeholder=1000>
+                  </div>
+            </div>
+            
+            <div class="row">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" onclick="startLoop()">Buy</button>
+                    <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="endLoop()">Sell</button>
+                </div>
+                
+            </div>
+
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 1000px">
+              <div class="modal-content">
+                <div class="modal-header">
+                    
+                  <h5 class="modal-title" id="exampleModalLabel">Notification</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="output_profit">
+                  you profite is 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+              </div>
+            </div>
+        </div>
+
+	</body>
+</html>

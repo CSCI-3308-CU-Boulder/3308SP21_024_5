@@ -1,0 +1,19 @@
+Meeting 3/23
+
+515 Start time 
+527 End time
+
+Local profile page that can show user data, what stocks they have tied to their account
+Reddit work
+
+API firebase to perform certain functions - firebase functions, cloud functions
+
+Milestone 5 - due april 9th
+	-Dont focus to much on testing yet and focus more on finishing things
+	-Sandbox might be good for testing
+
+Roadblocks - 
+	- Possibly Node server
+	- lambda AWS - might be a solutiong
+
+

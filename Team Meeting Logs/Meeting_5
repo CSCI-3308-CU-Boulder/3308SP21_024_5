@@ -1,0 +1,15 @@
+TIME: 20 Minutes.  3/8/2021
+
+Things to work on for next week
+
+Connect website to the database
+
+Rather than spending a ton of time making the website looking pretty we shhould figure out more features within graphs and pages.
+
+We want to limit how many clientside opertions we are running, so Middleman API? Dedoss attack? 
+
+Finnhub.io is better than polygon.io for our purposes because we nee live data as opposed to end of day data.
+
+
+
+

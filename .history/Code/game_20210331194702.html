@@ -3,15 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-        <script src = "game.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.0.2/echarts.min.js" integrity="sha512-t9GZbGKCH5MuYUFsq5AdrhllT0kdnc2fNMizKDgLXBBXgHP2dXxjRPOzYJauAXW9OXLlSYELUqWD30k7cb0Mkg==" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-            
-        <title>stonkbzz</title>
+		<title>stonkbzz</title>
 	</head>
 	<body>
         <!-- NAVBAR -->
@@ -44,9 +39,12 @@
         </div>
     </nav>
   <!-- NAVBAR -->
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.0.2/echarts.min.js" integrity="sha512-t9GZbGKCH5MuYUFsq5AdrhllT0kdnc2fNMizKDgLXBBXgHP2dXxjRPOzYJauAXW9OXLlSYELUqWD30k7cb0Mkg==" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
             
                 <div id="main" style="width: 800px;height: 600px; margin:0 auto;" ></div>
-
+>>>>>>> 89a683ea32f591911f1a1f2fb73e45ee42ed283e
         <style>
             canvas{
                 border: 1px;
@@ -55,27 +53,24 @@
 		
 		<script type="text/javascript"></script>
         <script>
-            
+
             var toastElList = [].slice.call(document.querySelectorAll('.toast'))
             var toastList = toastElList.map(function (toastEl) {
             return new bootstrap.Toast(toastEl, option)
             })
-            var date = [0,1,2,3]
-       
+
+
+            var date = [1,2,3,4]
                             //open, close, highest, lowest
-                    
-            var stock_data = [[7195.24, 7200.85, 7255, 7175.15],
-                            [7200.77, 6965.71, 7212.5, 6924.74],
-                            [6965.49, 7344.96, 7405, 6871.04],
-                            [7345, 7354.11, 7404, 7272.21]]
-            console.log(arrC)
-            var store_data = arrC
+            var stock_data = [[20, 34, 10,38],
+                            [40, 35, 30, 50],
+                            [31, 38, 33, 44],
+                            [38, 15, 5, 42]]
 			const myChart = echarts.init(document.getElementById('main'));
             myChart.resize({
                 width: 800,
                 height: 600
             })
-            
 			 option = {
 				toolbox: { feature: { saveAsImage: {} } },
 				xAxis: { type: 'category', data: date },
@@ -92,12 +87,16 @@
             var sell_price;
             var buy_price;
             //generate random data and plot
-            var count_day = 4
             function painting(){
-                //setTimeout(myChart.setOption(option), 2000)
+                var temp = []
+                for(i = 0; i < 4; i++){
+                    temp.push(Math.random()*100)
+                }
+                sell_price = temp[2]//always sell at highest price
+                buy_price = temp[0]
+                stock_data.push(temp)
                 date.push(date[date.length-1] +1)
-                stock_data.push(store_data[count_day])
-                console.log(stock_data)
+                //setTimeout(myChart.setOption(option), 2000)
                 option = {
                     toolbox: { feature: { saveAsImage: {} } },
                     xAxis: { type: 'category', data: date },
@@ -110,22 +109,19 @@
                     ],
                 };
                 myChart.setOption(option);
-                count_day ++
             }
             //start buying stock, plot starts generated 
             function startLoop(){
                 to_cancel = setInterval(painting,500)
-                buy_price = stock_data[count_day-1][0]
+
             }   
             //sell the stock, painting stops
             function endLoop(){
-
                 clearInterval(to_cancel)
                 calProfit()
             }
             //calculate the profit
             function calProfit(){
-                sell_price = stock_data[count_day-1][1]
                 profit = 0
                 temp = document.getElementById("user-amount").value
                 if(!temp){

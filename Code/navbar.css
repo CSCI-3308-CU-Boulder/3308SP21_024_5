@@ -1,0 +1,103 @@
+
+
+
+
+  :root{
+    --accent: #2e90f2;
+  }
+  *{
+    font-family: Roboto;
+  }
+  body{
+    background: #333;
+  }
+  #bg{
+    background-image: url("https://img.money.com/2017/03/170314_stocks.jpg?quality=60&w=1600");
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(2vmin) brightness(50%);
+  }
+  #navbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #333;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    border-bottom: .5vmin solid #222;
+  }
+  .option{
+    display: inline-block;
+  /* 	height: 10vmin; */
+    cursor: pointer;
+    font-size: 3vmin;
+    width: 20vmin;
+    text-align: center;
+    height: 6vmin;
+    line-height: 6vmin;
+    margin: 0;
+    padding: 0;
+    border-bottom: 0vmin solid var(--accent);
+    box-sizing: border-box;
+    transition: border .15s;
+  }
+  .option:hover{
+  /* 	background: #222; */
+    border-bottom: 6vmin solid var(--accent);
+  }
+  .sign{
+    position: absolute;
+    right: 0;
+  }
+  #logo{
+    display: inline-block;
+    background: white;
+    color: #333;
+    height: 5vmin;
+    width: 5vmin;
+    text-align: center;
+    border-radius: 100%;
+    vertical-align: middle;
+    line-height: 5vmin;
+    font-size: 5vmin;
+    margin-left: 4vmin;
+    margin-right: 4vmin;
+    transform: translateY(.5vmin);
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+  }
+  #logo:hover{
+    background: var(--accent);
+    transform: translateY(.5vmin) rotate(-45deg);
+  /* 	color: white; */
+  /* 	border: .4vmin solid white; */
+
+  /* 	box-sizing: border-box; */
+
+  }
+  #splash{
+    color: white;
+    font-size: 10vmin;
+    text-align: right;
+    position: absolute;
+    right: 5vmin;
+    top: 15vmin;
+    text-decoration: underline;
+  }
+  #splash2{
+    color: white;
+    font-size: 5vmin;
+    text-align: right;
+    position: absolute;
+    right: 5vmin;
+    bottom: 5vmin;
+    width: 90vmin;
+  }

@@ -1,5 +1,25 @@
 
+//Add these lines to html page in header
+// <<link href="navbar.css" rel="stylesheet">
+// <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
+// <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+// <script src=navbar.js ></script>
 
+
+
+//Add these lines to body
+// <div id="bg"></div>
+// 		<div id="navbar">
+// 			<div id="logo" onclick="linkHome()">S</div>
+// 			<div class="option" onclick="linkHome()">Home</div>
+// 			<div class="option" onclick="linkWatch()">Watchlist</div>
+// 			<div class="option" onclick="linkPort()">Portfolio</div>
+// 			<div class="option" onclick="linkGame()">Games</div>
+// 			<div class="option" onclick="linkDash()">Dashboard</div>
+// 			<div class="option sign" onclick="signIn()">Sign In</div>
+// </div>
 
 
 

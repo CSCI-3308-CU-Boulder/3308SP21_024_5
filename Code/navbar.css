@@ -10,6 +10,7 @@
   }
   body{
     background: #333;
+    padding-top: 70px;
   }
   #bg{
     background-image: url("https://img.money.com/2017/03/170314_stocks.jpg?quality=60&w=1600");

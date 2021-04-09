@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<link href="navbar.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
+	<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+	<script src=navbar.js ></script>
+
+
+<script>
+// $firebaseAuth().$getAuth();  check for logged in user
+
+var ref = firebase.database().ref();
+
+ref.on("value", function(snapshot) {
+	document.getElementById("value").innerHTML += snapshot.val().users.Y2r0O8OdPfVdMaKENhKfNPN7pdA2.totalvalue;
+	document.getElementById("totalstock").innerHTML += snapshot.val().users.Y2r0O8OdPfVdMaKENhKfNPN7pdA2.stocks.quanity1;
+	document.getElementById("MVP").innerHTML += snapshot.val().users.Y2r0O8OdPfVdMaKENhKfNPN7pdA2.stocks.name1;
+
+ console.log(snapshot.val());
+}, function (error) {
+ console.log("Error: " + error.code);
+});
+
+
+</script>
+</head>
+<body>
+	<div id="bg"></div>
+		<div id="navbar">
+			<div id="logo" onclick="linkHome()">S</div>
+			<div class="option" onclick="linkHome()">Home</div>
+			<div class="option" onclick="linkWatch()">Watchlist</div>
+			<div class="option" onclick="linkPort()">Portfolio</div>
+			<div class="option" onclick="linkGame()">Games</div>
+			<div class="option" onclick="linkDash()">Dashboard</div>
+			<div class="option sign" onclick="signIn()">Sign In</div>
+    	</div>
+			<p> Portfolio Test page </p>
+			<p id= "totalstock"> Total Stocks:  </p>
+			<p id= "value"> Value: </p>
+			<p id= "MVP"> Most Valuable Stock: </p>
+
+
+</body>
+</html>

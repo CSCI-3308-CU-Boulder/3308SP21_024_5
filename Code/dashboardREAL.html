@@ -1,95 +1,50 @@
-
-<!DOCTYPE HTML>
-<html>
 <head>
-	<link href="navbar.css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
-	<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
-	<script src=navbar.js ></script>
-		
+	<!-- Load plotly.js into the DOM -->
+	<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+  <script src='dashboardREAL.js'></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link href="navbar.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+  <script src=navbar.js ></script>
 
-<script>
-window.onload = function () {
 
-var dataPoints = [];
-
-var chart = new CanvasJS.Chart("chartContainer", {
-	animationEnabled: true,
-	theme: "light2", // "light1", "light2", "dark1", "dark2"
-	exportEnabled: true,
-	title: {
-		text: "Sample candlestick chart feature"
-	},
-	subtitles: [{
-		text: "Weekly Averages"
-	}],
-	axisX: {
-		interval: 1,
-		valueFormatString: "MMM"
-	},
-	axisY: {
-		prefix: "$",
-		title: "Price"
-	},
-	toolTip: {
-		content: "Date: {x}<br /><strong>Price:</strong><br />Open: {y[0]}, Close: {y[3]}<br />High: {y[1]}, Low: {y[2]}"
-	},
-	data: [{
-		type: "candlestick",
-		yValueFormatString: "$##0.00",
-		dataPoints: dataPoints
-	}]
-});
-
-$.get("https://canvasjs.com/data/gallery/javascript/netflix-stock-price.csv", getDataPointsFromCSV);
-
-function getDataPointsFromCSV(csv) {
-	var csvLines = points = [];
-	csvLines = csv.split(/[\r?\n|\r|\n]+/);
-	for (var i = 0; i < csvLines.length; i++) {
-		if (csvLines[i].length > 0) {
-			points = csvLines[i].split(",");
-			dataPoints.push({
-				x: new Date(
-					parseInt(points[0].split("-")[0]),
-					parseInt(points[0].split("-")[1]),
-					parseInt(points[0].split("-")[2])
-				),
-				y: [
-					parseFloat(points[1]),
-					parseFloat(points[2]),
-					parseFloat(points[3]),
-					parseFloat(points[4])
-				]
-			});
-		}
-	}
-	chart.render();
-}
-
-}
-</script>
 </head>
+
 <body>
-	<div id="bg"></div>
+   <div id="bg"></div>
 		<div id="navbar">
 			<div id="logo" onclick="linkHome()">S</div>
-			<div class="option" onclick="linkHome()">Home</div>
-			<div class="option" onclick="linkWatch()">Watchlist</div>
-			<div class="option" onclick="linkPort()">Portfolio</div>
-			<div class="option" onclick="linkGame()">Games</div>
+ 			<div class="option" onclick="linkHome()">Home</div>
+ 			<div class="option" onclick="linkWatch()">Watchlist</div>
+ 			<div class="option" onclick="linkPort()">Portfolio</div>
+ 			<div class="option" onclick="linkGame()">Games</div>
 			<div class="option" onclick="linkDash()">Dashboard</div>
-			<div class="option sign" onclick="signIn()">Sign In</div>
-    	</div>
-<div id="chartContainer" class = "container"style="height: 300px; width: 60%; text-align: center; "></div>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-	
+ 			<div class="option sign" onclick="signIn()">Sign In</div>
+ </div>
+
+	<div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+
+
+
+	<div class="" style="background-color: #686868;">
+	    <div class="container-fluid" style="padding: 2%; ">
+
+	        <div class="row">
+	          <div class="col-3">
+	          </div>
+	          <div class="col-3">
+	            <input class="form-control" type="text" name="title" placeholder="Enter Tags" id ="test">
+	          </div>
+	          <div class="col-1">
+	            <input class="btn btn-light" type="submit" name="Submit" onclick="myFunction()" value = "Submit"/>
+	          </div>
+						</div>
+						</div>
+						</div>
 
 </body>
-</html>
-
 
 

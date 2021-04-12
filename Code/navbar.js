@@ -44,7 +44,7 @@
 
 			auth.onAuthStateChanged(user => {
 				thisUser = user;
-				console.log(thisUser);
+				//console.log(thisUser);
 			});
 
 			function linkHome(){

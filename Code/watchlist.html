@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+        <script src='watchlist.js'></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <link href="navbar.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
+        <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+        <script src=navbar.js ></script>
+    </head>
+    <body>
+        <div id="bg"></div>
+		<div id="navbar">
+			<div id="logo" onclick="linkHome()">S</div>
+ 			<div class="option" onclick="linkHome()">Home</div>
+ 			<div class="option" onclick="linkWatch()">Watchlist</div>
+ 			<div class="option" onclick="linkPort()">Portfolio</div>
+ 			<div class="option" onclick="linkGame()">Games</div>
+			<div class="option" onclick="linkDash()">Dashboard</div>
+ 			<div class="option sign" onclick="signIn()">Sign In</div>
+             
+ 	    </div>
+         <script>
+             displayPin()
+         </script>
+         <div id="Pinned" style="width: 100%;height: 1200px; margin:0 auto;"></div>
+    </body>
+</html>

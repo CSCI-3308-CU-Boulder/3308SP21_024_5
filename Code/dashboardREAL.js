@@ -89,8 +89,13 @@ function timestampToTime(timestamp) {
 
 
 function jump_to_game(){
-  console.log('im in ')
+  
   var password = document.getElementById('test').value;
   window.location.href = "game_password.html?param1="+ password +"";
+}
+
+function add_graph(){
   
+  var password = document.getElementById('test').value;
+  window.location.href = "game_password.html?param1="+ password +"";
 }

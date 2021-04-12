@@ -94,3 +94,7 @@
 			function signIn(){
 				window.location.href = "sign in/google_auth.html";
 			}
+
+			function watchlist(){
+				window.location.herf = "watchlist.html"
+			}

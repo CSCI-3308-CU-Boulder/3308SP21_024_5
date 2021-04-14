@@ -407,7 +407,10 @@
 					signIn();
 				}else{
 					database.ref("users/" + thisUser.uid + "/ownedStocks").once("value", function(e){
-						u_stocks = e.val();
+						if(e.val() == null || e.val() == undefined)
+							u_stocks = {}
+						else
+							u_stocks = e.val();
 					});
 				}
 			});

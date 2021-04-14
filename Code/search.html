@@ -406,7 +406,7 @@
 				if(thisUser == null){
 					signIn();
 				}else{
-					database.ref("users/" + authResult.user.uid + "/ownedStocks").once("value", function(e){
+					database.ref("users/" + thisUser.uid + "/ownedStocks").once("value", function(e){
 						u_stocks = e.val();
 					});
 				}
@@ -647,7 +647,7 @@
 				document.getElementById("n").value = "";
 				document.getElementById("n").oninput();
 				
-				database.ref("users/" + thisUser.user.uid + "/ownedStocks/" + currentStock).set(u_stocks[currentStock]);
+				database.ref("users/" + thisUser.uid + "/ownedStocks/" + currentStock).set(u_stocks[currentStock]);
 			}
 			
 			function changeAction(a){

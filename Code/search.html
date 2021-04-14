@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.58.4/plotly.min.js"></script>
+		<style>
+			:root{
+				--accent: #2e90f2;
+			}
+			*{
+				font-family: Roboto;
+			}
+			body{
+				background: #EEE;
+			}
+			#navbar{
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				background: #333;
+				color: white;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				border-bottom: .5vmin solid #222;
+			}
+			.option{
+				display: inline-block;
+			/* 	height: 10vmin; */
+				cursor: pointer;
+				font-size: 3vmin;
+				width: 20vmin;
+				text-align: center;
+				height: 6vmin;
+				line-height: 6vmin;
+				margin: 0;
+				padding: 0;
+				border-bottom: 0vmin solid var(--accent);
+				box-sizing: border-box;
+				transition: border .15s;
+			}
+			.option:hover{
+			/* 	background: #222; */
+				border-bottom: 6vmin solid var(--accent);
+			}
+			.sign{
+				position: absolute;
+				right: 0;
+			}
+			#logo{
+				display: inline-block;
+				background: white;
+				color: #333;
+				height: 5vmin;
+				width: 5vmin;
+				text-align: center;
+				border-radius: 100%;
+				vertical-align: middle;
+				line-height: 5vmin;
+				font-size: 5vmin;
+				margin-left: 4vmin;
+				margin-right: 4vmin;
+				transform: translateY(.5vmin);
+				cursor: pointer;
+				transition: background .15s, transform .15s;
+			}
+			#logo:hover{
+				background: var(--accent);
+				transform: translateY(.5vmin) rotate(-45deg);
+			/* 	color: white; */
+			/* 	border: .4vmin solid white; */
+				
+			/* 	box-sizing: border-box; */
+				
+			}
+			#search{
+				position: fixed;
+				top: 8vmin;
+				right: 1.5vmin;
+				outline: none;
+				border: none;
+				border-bottom: .5vmin solid #333;
+				font-size: 5vmin;
+			/* 	text-transform: uppercase; */
+				width: 60vmin;
+			/* 	background: transparent; */
+			/* 	text-align: right; */
+				transition: border .15s, color .15s;
+				background: transparent;
+				color: #333;
+			}
+			#search:focus{
+				border-bottom: 1vmin solid var(--accent);
+				color: black;
+			}
+			#results{
+				position: fixed;
+			/* 	background: #DDD; */
+				top: 16vmin;
+				right: 1.5vmin;
+				bottom: 1.5vmin;
+				width: 60vmin;
+			/* 	overflow-x: visible; */
+				overflow-y: auto;
+			}
+			#graph{
+				position: fixed;
+			/* 	background: #DDD; */
+				top: 8vmin;
+				left: 1.5vmin;
+				bottom: 1.5vmin;
+				width: calc(100vw - 60vmin - 4.5vmin);
+			/* 	overflow-x: visible; */
+			/* 	overflow-y: auto; */
+			}
+			.res:first-child{
+				border-top: none;
+			/* 	border-bottom: .5vmin solid #DDD; */
+			}
+			.res{
+				cursor: pointer;
+				color: #333;
+				border-top: .5vmin solid #DDD;
+				border-left: 0 solid #DDD;
+				font-size: 5vmin;
+				padding: 1vmin;
+				transition: border .15s, background .15s;
+				overflow: hidden;
+				white-space: nowrap
+			}
+			.res:hover{
+				border-left: 5vmin solid #DDD;
+			/* 	background: #CCC; */
+			/* 	background: #333; */
+			}
+			
+			.res.selected{
+				background: #333;
+				color: #EEE;
+				border-left: 0 solid #DDD;
+			}
+			
+			/* .res::before{
+				content: "";
+				background: var(--accent);
+				position: absolute;
+				display: block;
+				height: 6vmin;
+				width: 4vmin;
+				transform: translateX(-5.5vmin);
+				clip-path: polygon(100% 0%, 50% 50%, 100% 100%, 50% 100%, 0% 50%, 50% 0%);
+			} */
+			
+			::-webkit-scrollbar {
+			  width: 2vmin;
+				
+			}
+			
+			::-webkit-scrollbar-track {
+			  background: transparent; 
+			}
+			
+			::-webkit-scrollbar-thumb {
+			  background: #888;
+			}
+			
+			/* Handle on hover */
+			::-webkit-scrollbar-thumb:hover {
+			  background: #555;
+			}
+			
+			@keyframes spinner{
+				0%{
+					transform: rotate(.375turn);
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 25%, 50% 50%, 75% 0%);
+				}
+				50%{
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 200%, 50% 50%, -100% 0%);
+				}
+				100%{
+					transform: rotate(2.375turn);
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 25%, 50% 50%, 75% 0%);
+				}
+			}
+			
+			#loader{
+				width: 6vmin;
+				height: 6vmin;
+				border: 1vmin solid #888;
+				border-radius: 100%;
+				position: fixed;
+				bottom: calc(1.5vmin + 50vh - 8.75vmin - 4vmin);
+				right: calc(31.5vmin - 4vmin);
+				clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 50%, 50% 50%, 50% 0%);
+				animation: spinner 2s infinite linear;
+				display: none;
+			}
+			#loader2{
+				width: 6vmin;
+				height: 6vmin;
+				border: 1vmin solid #888;
+				border-radius: 100%;
+				position: fixed;
+				bottom: calc(50vh - 4vmin);
+				left: calc(1.5vmin + 50vw - 32.25vmin - 4vmin);
+				clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 50%, 50% 50%, 50% 0%);
+				animation: spinner 2s infinite linear;
+				display: none;
+			}
+			.sub{
+				font-size: 3vmin;
+			}
+			#error{
+				font-size: 4vmin;
+				position: fixed;
+				top: 50vh;
+				left: calc(1.5vmin + 50vw - 32.25vmin);
+				transform: translate(-50%, -50%);
+				color: #a82e25;
+				display: none;
+			}
+			.nres{
+				color: #888;
+				vertical-align: middle;
+				width: 100%;
+				height: 100%;
+				line-height: calc(100vh - 16vmin - 1.5vmin);
+				text-align: center;
+				color: #888;
+			}
+			#fav{
+				color: #888;
+				cursor: pointer;
+				position: fixed;
+				top: 8vmin;
+				left: 1.5vmin;
+				font-size: 8vmin;
+				height: 8vmin;
+				width: 8vmin;
+				text-align: center;
+				line-height: 95%;
+				background: #EEE;
+			/* 	border: .5vmin solid #888; */
+				border-radius: 3vmin;
+			/* 	box-shadow: 0 0 1vmin #888; */
+				transition: transform .15s;
+			}
+			#fav:hover{
+				transform: scale(1.1);
+			}
+			@keyframes sparkle{
+				from { color: white }
+				to { color: #f5cb40 }
+			}
+			#fav.select{
+				animation: sparkle .3s forwards;
+				color: #f5cb40;
+			}
+			#menu{
+				transform: translateX(-30vmin);
+				transition: transform .3s;
+			}
+			#pmenu{
+				position: fixed;
+				background: var(--accent);
+				top: 9vmin;
+				left: 11vmin;
+				color: white;
+				padding: 1vmin;
+				font-size: 3vmin;
+				border-radius: 1vmin;
+				cursor: pointer;
+			}
+			#purchase{
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.7);
+				display: none;
+				opacity: 0;
+				transition: opacity .15s;
+			}
+			#purchase.open{
+				display: block;
+				opacity: 1;
+			}
+			#popup{
+				position: fixed;
+				top: 50vh;
+				left: 50vw;
+				transform: translate(-50%, -50%);
+				display: inline-block;
+				background: #EEE;
+				font-size: 3vmin;
+				text-align: center;
+				padding: 3vmin;
+				border-radius: 2vmin;
+				color: #333;
+			}
+			.sb{
+				display: inline-block;
+				background: #888;
+				color: #333;
+				background: background .15s, color .15s;
+				padding: 1vmin;
+				border-radius: .7vmin;
+				cursor: pointer;
+				transition: background .15s, color .15s;
+			}
+			.sb.active{
+				background: var(--accent);
+				color: white;
+			}
+			#n{
+				font-size: 3vmin;
+				color: #333;
+				background: none;
+				outline: none;
+				border: none;
+				border-bottom: .5vmin solid #333;
+				transition: border .15s, color .15s;
+				width: 10vmin;
+			}
+			#n:focus{
+				border-bottom: .5vmin solid var(--accent);
+				color: black;
+			}
+			.green{
+				color: #46c738;
+			}
+			.red{
+				color: #c73838;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="navbar">
+			<div id="logo" onclick="linkHome()">S</div>
+			<div class="option" onclick="linkHome()">Home</div>
+			<div class="option" onclick="linkWatch()">Watchlist</div>
+			<div class="option" onclick="linkPort()">Portfolio</div>
+			<div class="option" onclick="linkGame()">Games</div>
+			<div class="option" onclick="linkDash()">Dashboard</div>
+			<div class="option sign" onclick="signIn()">Sign In</div>
+		</div>
+		<input id="search" autocomplete="off" placeholder="search for stocks..." oninput="search(this)"></input>
+		<div id="results"></div>
+		<div id="loader"></div>
+		<div id="loader2"></div>
+		<div id="graph"></div>
+		<div id="error">Error: no data available for selected stock.</div>
+		
+		<div id="menu">
+			<div id="fav" onclick="favorite()">&#9733;</div>
+			<div id="pmenu" onclick="purchaseMenu()">Buy/Sell</div>
+		</div>
+		
+		<div id="purchase">
+			<div id="popup">
+				You currently own <b id="owned">0</b> shares.
+				<br/>
+				<b id="cost">$0</b> per share, you own <b id="val">$0</b> worth of shares.
+				<br/>
+				<br/>
+				<div class="sb active" id="a0" onclick="changeAction(0)">Buy</div>
+				&nbsp;
+				<div class="sb" id="a1" onclick="changeAction(1)">Sell</div>
+				&nbsp;
+				<input id="n" autocomplete="off" placeholder="0"> shares.
+				<br/>
+				<br/>
+				Balance change of <b id="net">$0</b>.
+				<br/>
+				<br/>
+				<div class="sb active" style="float:left" onclick="purchase()">Apply</div>
+				<div class="sb active" style="float:right" onclick="pmenu.className = '';">Close</div>
+			</div>
+		</div>
+		<script>
+			var firebaseConfig = {
+				apiKey: "AIzaSyDlzAoiTs11V-ujyslFbrwTA2J_eEtp9ns",
+				authDomain: "stonks-app-f9c3e.firebaseapp.com",
+				databaseURL: "https://stonks-app-f9c3e-default-rtdb.firebaseio.com",
+				projectId: "stonks-app-f9c3e",
+				storageBucket: "stonks-app-f9c3e.appspot.com",
+				messagingSenderId: "100026423595",
+				appId: "1:100026423595:web:0f7ef98980ef4019930d6e",
+				measurementId: "G-B76TGRT1K9"
+			};
+			
+			firebase.initializeApp(firebaseConfig);
+			
+			var database = firebase.database();
+			var auth = firebase.auth();
+			
+			var thisUser = undefined;
+			
+			auth.onAuthStateChanged(user => {
+				thisUser = user;
+				if(thisUser == null){
+					signIn();
+				}else{
+					database.ref("users/" + authResult.user.uid + "/ownedStocks").once("value", function(e){
+						u_stocks = e.val();
+					});
+				}
+			});
+			
+			function linkHome(){
+				window.location.href = "";
+			}
+			
+			function linkWatch(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "watchlist.html";
+			}
+			
+			function linkPort(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "portfolio.html";
+			}
+			
+			function linkGame(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "game.html";
+			}
+			
+			function linkDash(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "dashboardREAL.html";
+			}
+			
+			function signIn(){
+				window.location.href = "sign in/google_auth.html";
+			}
+			
+			var results = document.getElementById("results");
+			var loader = document.getElementById("loader");
+			var loader2 = document.getElementById("loader2");
+			var x = new XMLHttpRequest();
+			
+			var currentQuote = {
+				symbol: "",
+				value: 0
+			};
+			var currentStock = "";
+			
+			var q = new XMLHttpRequest();
+			function getValue(s){
+				q.abort();
+				q = new XMLHttpRequest();
+				q.onload = function(){
+					currentQuote.value = JSON.parse(q.response).c;
+					currentQuote.symbol = s;
+					document.getElementById("n").oninput();
+				}
+				q.open("GET", "https://vast-falls-84529.herokuapp.com/?method=quote&symbol=" + s);
+				q.send();
+			}
+			
+			x.onload = function(e){
+				var resp = JSON.parse(e.target.response);
+				for(var i = 0; i < resp.count; i++){
+					if(resp.result[i].symbol.includes("."))
+						continue;
+					var r = document.createElement("DIV");
+					r.className = "res";
+					r.innerHTML = `${resp.result[i].symbol}<span class="sub">${resp.result[i].description}</span>`;
+					r.onclick = function(){
+						Plotly.purge("graph");
+						
+						var c = document.getElementsByClassName("res selected");
+						if(c && c[0]){
+							if(c[0] == this){
+								c[0].className = "res";
+								document.getElementById("menu").style.transform = "";
+								return;
+							}
+							c[0].className = "res";
+						}
+						this.className = "res selected";
+						
+						var req = new XMLHttpRequest();
+						var end = Math.floor(Date.now() / 1000), start = end - 365*24*60*60;
+						
+						var title = this.innerHTML.split("<")[0] + " - " + this.innerHTML.split(">")[1].split("<")[0];
+						
+						document.getElementById("error").style.display = "none";
+						
+						req.abort();
+						req.onload = function(e){
+							loader2.style.display = "none";
+							var re = JSON.parse(req.response);
+							
+							if(re.s == "no_data"){
+								document.getElementById("error").style.display = "block";
+								return;
+							}
+							for(var i in re.t)
+								re.t[i] = (new Date(re.t[i] * 1000)).toGMTString();
+							
+							var trace = {
+								x: re.t,
+								close: re.c,
+								high: re.h,
+								low: re.l,
+								open: re.o,
+								type: 'candlestick',
+								// xaxis: 'x',
+								// yaxis: 'y',
+								// increasing: {line: {color: 'black'}},
+								// decreasing: {line: {color: 'red'}},
+							}
+							var layout = {
+								dragmode: 'zoom',
+								showlegend: false,
+								xaxis: {
+									rangeslider: {
+										visible: false
+									}
+								},
+								paper_bgcolor: "#EEE",
+								plot_bgcolor: "#EEE",
+								title: title
+							}
+							
+							Plotly.newPlot("graph", [trace], layout, {displayModeBar: false});
+							
+							// document.getElementById("menu").style.display = "block";
+							getValue(currentStock);
+							document.getElementById("menu").style.transform = "translateX(0)";
+						}
+						req.open("GET", `https://vast-falls-84529.herokuapp.com/?method=candle&symbol=${this.innerHTML.split("<")[0].replace(".", "%2e")}&resolution=15&from=${start}&to=${end}`);
+						req.send();
+						
+						currentStock = this.innerHTML.split("<")[0].replace(".", "%2e");
+						
+						loader2.style.display = "block";
+						document.getElementById("menu").style.transform = "";
+					}
+					results.appendChild(r);
+				}
+				loader.style.display = "none";
+				
+				if(document.getElementsByClassName("res").length == 0)
+					results.innerHTML = '<div class="nres">No results.</div>';
+			}
+			
+			function search(e){
+				x.abort();
+				var q = e.value;
+				results.innerHTML = "";
+				if(q == ""){
+					loader.style.display = "none";
+					return;
+				}
+				x.open("GET", "https://vast-falls-84529.herokuapp.com/?method=search&q=" + q);
+				x.send();
+				loader.style.display = "block";
+			}
+			
+			var fav = document.getElementById("fav");
+			function favorite(){
+				fav.className = fav.className == "" ? "select" : "";
+			}
+			
+			var pmenu = document.getElementById("purchase");
+			function purchaseMenu(){
+				pmenu.className = "open";
+				document.getElementById("n").oninput();
+			}
+			
+			var u_stocks = {}
+			// var u_watch = {}
+			
+			var action = 0;
+			
+			function r2(n){
+				return Math.round(n * 100) / 100;
+			}
+			
+			document.getElementById("n").oninput = function(){
+				this.value = this.value.replace(/[^\d\.]/g, "").substring(0, 5);
+				if((this.value.match(/\./g) ?? []).length > 1)
+					this.value = this.value.substring(0, this.value.length - 1);
+				while(action == 1 && parseFloat(this.value) > (u_stocks[currentStock] ? u_stocks[currentStock].shares : 0))
+					this.value = this.value.substring(0, this.value.length - 1);
+				console.log(parseFloat(this.value));
+				
+				var n = parseFloat(this.value);
+				if(isNaN(n)) n = 0;
+				var q = currentQuote.symbol == currentStock ? currentQuote.value : 0;
+				
+				var o = u_stocks[currentStock] ? u_stocks[currentStock].shares : 0;
+				document.getElementById("owned").innerHTML = r2(o);
+				document.getElementById("cost").innerHTML = "$" + r2(q);
+				document.getElementById("val").innerHTML = "$" + r2(q * o);
+				
+				var net = document.getElementById("net");
+				net.innerHTML = "$" + r2(q * n);
+				if(n == 0)
+					net.className = "";
+				else if(action == 0)
+					net.className = "red";
+				else
+					net.className = "green";
+			}
+			
+			function purchase(){
+				var n = parseFloat(document.getElementById("n").value);
+				if(isNaN(n) || n == 0) return;
+				
+				if(!u_stocks[currentStock]){
+					u_stocks[currentStock] = {
+						shares: 0,
+						watch: false
+					}
+				}
+				u_stocks[currentStock].shares += n * (action ? -1 : 1);
+				
+				document.getElementById("n").value = "";
+				document.getElementById("n").oninput();
+				
+				database.ref("users/" + thisUser.user.uid + "/ownedStocks/" + currentStock).set(u_stocks[currentStock]);
+			}
+			
+			function changeAction(a){
+				action = a;
+				document.getElementById("a0").className = "sb " + (a == 0 ? "active" : "");
+				document.getElementById("a1").className = "sb " + (a == 1 ? "active" : "");
+				
+				document.getElementById("n").oninput();
+			}
+		</script>
+	</body>
+</html>

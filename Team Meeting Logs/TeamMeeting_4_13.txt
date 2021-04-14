@@ -1,0 +1,8 @@
+Meeting 4/13
+
+
+Everyone needs to talk. Split up into slides
+Spend more time on architecture page
+Spend more time talking about firebase,plotly, finnhub
+Update diagram with suggestions. Highlight and add icons to the diagram
+On the APP remove the sign in after being signed in. Move sign in page

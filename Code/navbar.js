@@ -48,7 +48,7 @@
 			});
 
 			function linkHome(){
-				window.location.href = "";
+				window.location.href = "landing_page.html";
 			}
 
 			function linkWatch(){

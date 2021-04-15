@@ -209,3 +209,214 @@
 			#search.open{
 				left: 1.5vmin;
 			}
+		</style>
+	</head>
+	<body>
+		<div id="navbar">
+			<div id="logo" onclick="linkHome()">S</div>
+			<div class="option" onclick="linkHome()">Home</div>
+			<div class="option" onclick="linkWatch()">Watchlist</div>
+		<!-- 	<div class="option" onclick="linkPort()">Portfolio</div> -->
+			<div class="option" onclick="linkGame()">Games</div>
+			<div class="option" onclick="linkSearch()">Search</div>
+			<div class="option" onclick="linkDash()">Dashboard</div>
+		<!-- 	<div class="option sign" onclick="signIn()">Sign In</div> -->
+		</div>
+		<div class="title">Dashboard</div>
+		<div id="miniw">
+			<div class="lpos"><div class="loader"></div></div>
+		</div>
+		<div id="reddit">
+			<div class="lpos"><div class="loader"></div></div>
+		</div>
+		<div id="search">Open in Search</div>
+		
+		<script>
+			var firebaseConfig = {
+				apiKey: "AIzaSyDlzAoiTs11V-ujyslFbrwTA2J_eEtp9ns",
+				authDomain: "stonks-app-f9c3e.firebaseapp.com",
+				databaseURL: "https://stonks-app-f9c3e-default-rtdb.firebaseio.com",
+				projectId: "stonks-app-f9c3e",
+				storageBucket: "stonks-app-f9c3e.appspot.com",
+				messagingSenderId: "100026423595",
+				appId: "1:100026423595:web:0f7ef98980ef4019930d6e",
+				measurementId: "G-B76TGRT1K9"
+			};
+			
+			firebase.initializeApp(firebaseConfig);
+			
+			var database = firebase.database();
+			var auth = firebase.auth();
+			
+			var thisUser = undefined;
+			var u_stocks = {};
+			
+			auth.onAuthStateChanged(user => {
+				thisUser = user;
+				if(thisUser == null){
+					signIn();
+				}else{
+					database.ref("users/" + thisUser.uid + "/ownedStocks").once("value", function(e){
+						if(e.val() == null || e.val() == undefined)
+							u_stocks = {}
+						else
+							u_stocks = e.val();
+						
+						displayStocks();
+					});
+				}
+			});
+			
+			function linkHome(){
+				window.location.href = "landing_page.html";
+			}
+			
+			function linkWatch(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "watchlist.html";
+			}
+			
+			function linkPort(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "portfolio.html";
+			}
+			
+			function linkGame(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "game.html";
+			}
+			
+			function linkDash(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "dashboardREAL.html";
+			}
+			
+			function linkSearch(q){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "search.html" + (q ? "?symbol=" + q : "");
+			}
+			
+			function signIn(){
+				window.location.href = "sign in/google_auth.html";
+			}
+			
+			var watchlist = document.getElementById("miniw");
+			function displayStocks(){
+				var wempty = true;
+				var rarr = [];
+				for(var s in u_stocks)
+					if(u_stocks[s].watch){ rarr.push(u_stocks[s]); rarr[rarr.length - 1].symbol = s; }
+				
+				if(rarr.length == 0)
+					watchlist.innerHTML = "<div class='hint'>Looks like you don't have anything on your watchlist, why not <span class='link' onclick='linkSearch()'>search</span> and find some?</div>";
+				else
+					loadGraph(watchlist, rarr[Math.floor(Math.random() * rarr.length)].symbol);
+			}
+			// u_stocks = {
+			// 	AAPL: {watch: false, shares: 1},
+			// 	GOOG: {watch: true, shares: 0},
+			// 	GME: {watch: false, shares: 1},
+			// 	T: {watch: false, shares: 1},
+			// 	// STALL_TEST: {watch: true, shares: 0},
+			// 	Y: {watch: true, shares: 0},
+			// 	A: {watch: true, shares: 1},
+			// 	AA: {watch: true, shares: 0}
+			// }
+			// displayStocks();
+			
+			function loadGraph(div, symbol){
+				if(symbol == "STALL_TEST") return;
+				var req = new XMLHttpRequest();
+				var end = Math.floor(Date.now() / 1000), start = end - 365*24*60*60;
+				
+				req.onload = function(e){
+					// loader2.style.display = "none";
+					var re = JSON.parse(req.response);
+					console.log(re);
+					
+					// if(re.s == "no_data"){
+					// 	document.getElementById("error").style.display = "block";
+					// 	return;
+					// }
+					for(var i in re.t)
+						re.t[i] = (new Date(re.t[i] * 1000)).toGMTString();
+					
+					var trace = {
+						x: re.t,
+						close: re.c,
+						high: re.h,
+						low: re.l,
+						open: re.o,
+						type: 'candlestick',
+						// xaxis: 'x',
+						// yaxis: 'y',
+						// increasing: {line: {color: 'black'}},
+						// decreasing: {line: {color: 'red'}},
+					}
+					var layout = {
+						yaxis: {},
+			        		xaxis: {rangeslider: { visible: false }},
+						showlegend: false,
+						paper_bgcolor: "#EEE",
+						plot_bgcolor: "#EEE",
+						title: symbol
+					}
+					div.innerHTML = "";
+					document.getElementById("search").className = "open";
+					document.getElementById("search").onclick = function(){ linkSearch(symbol) };
+					
+					Plotly.newPlot(div, [trace], layout, {displayModeBar: false});
+				}
+				req.open("GET", `https://vast-falls-84529.herokuapp.com/?method=candle&symbol=${symbol}&resolution=15&from=${start}&to=${end}`);
+				req.send();
+			}
+			
+			var x = new XMLHttpRequest();
+			x.onload = function(){
+				document.getElementById("reddit").innerHTML = "";
+				var s = document.createElement("DIV");
+				s.id = "scrollr";
+				document.getElementById("reddit").appendChild(s);
+				var resp = JSON.parse(x.response);
+				console.log(resp);
+				for(var n = 0; n < 2; n++)
+				for(var i = 0; i < resp.data.children.length; i++){
+					var r = resp.data.children[i].data;
+					var e = document.createElement("DIV");
+					e.className = "rline";
+					e.innerHTML = `${r.title}<br/><span class="light">${r.ups} - ${r.author}</span>`
+					e.url = r.url;
+					e.onclick = function(){ window.open(this.url) }
+					s.appendChild(e);
+				}
+			}
+			x.open("GET", "https://api.reddit.com/r/wallstreetbets/hot");
+			x.send();
+		</script>
+	</body>
+</html>

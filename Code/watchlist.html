@@ -1,31 +1,369 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-        <script src='watchlist.js'></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-        <link href="navbar.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
-        <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
-        <script src=navbar.js ></script>
-    </head>
-    <body>
-        <div id="bg"></div>
+	<head>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.58.4/plotly.min.js"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
+		<style>
+			:root{
+				--accent: #2e90f2;
+			}
+			*{
+				font-family: Roboto;
+				user-select: none;
+			}
+			body{
+				background: #EEE;
+				overflow: hidden;
+			}
+			#navbar{
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				background: #333;
+				color: white;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				border-bottom: .5vmin solid #222;
+				z-index: 1;
+			}
+			.option{
+				display: inline-block;
+			/* 	height: 10vmin; */
+				cursor: pointer;
+				font-size: 3vmin;
+				width: 20vmin;
+				text-align: center;
+				height: 6vmin;
+				line-height: 6vmin;
+				margin: 0;
+				padding: 0;
+				border-bottom: 0vmin solid var(--accent);
+				box-sizing: border-box;
+				transition: border .15s;
+			}
+			.option:hover{
+			/* 	background: #222; */
+				border-bottom: 6vmin solid var(--accent);
+			}
+			.sign{
+				position: absolute;
+				right: 0;
+			}
+			#logo{
+				display: inline-block;
+				background: white;
+				color: #333;
+				height: 5vmin;
+				width: 5vmin;
+				text-align: center;
+				border-radius: 100%;
+				vertical-align: middle;
+				line-height: 5vmin;
+				font-size: 5vmin;
+				margin-left: 4vmin;
+				margin-right: 4vmin;
+				transform: translateY(.5vmin);
+				cursor: pointer;
+				transition: background .15s, transform .15s;
+			}
+			#logo:hover{
+				background: var(--accent);
+				transform: translateY(.5vmin) rotate(-45deg);
+			/* 	color: white; */
+			/* 	border: .4vmin solid white; */
+				
+			/* 	box-sizing: border-box; */
+				
+			}
+			::-webkit-scrollbar {
+			  width: 2vmin;
+				
+			}
+			
+			::-webkit-scrollbar-track {
+			  background: transparent; 
+			}
+			
+			::-webkit-scrollbar-thumb {
+			  background: #888;
+			}
+			
+			/* Handle on hover */
+			::-webkit-scrollbar-thumb:hover {
+			  background: #555;
+			}
+			
+			@keyframes spinner{
+				0%{
+					transform: rotate(.375turn);
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 25%, 50% 50%, 75% 0%);
+				}
+				50%{
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 200%, 50% 50%, -100% 0%);
+				}
+				100%{
+					transform: rotate(2.375turn);
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 25%, 50% 50%, 75% 0%);
+				}
+			}
+			
+			.loader{
+				width: 6vmin;
+				height: 6vmin;
+				border: 1vmin solid #888;
+				border-radius: 100%;
+				clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 50%, 50% 50%, 50% 0%);
+				animation: spinner 2s infinite linear;
+				display: inline-block;
+			}
+			.lpos{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%,-50%);
+			}
+			.title{
+				margin-top: 8vmin;
+				text-align: center;
+				font-size: 8vmin;
+				color: #333;
+			}
+			.sdisp{
+				min-height: 90vh;
+				text-align: center;
+				position: relative;
+			}
+			#scroll-container{
+				position: fixed;
+				top: 0; left: 0;
+				height: 100vh;
+				width: 100vw;
+				overflow-y: scroll;
+			}
+			.hint{
+				height: 100%;
+				width: 100%;
+				text-align: center;
+				vertical-align: middle;
+				line-height: 90vh;
+				font-size: 3vmin;
+				color: #888;
+			}
+			.graph{
+				display: inline-block;
+				width: 47vw;
+				height: 30vw;
+				position: relative;
+			}
+			.link{
+				font-weight: bold;
+				color: var(--accent);
+				cursor: pointer;
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
 		<div id="navbar">
 			<div id="logo" onclick="linkHome()">S</div>
- 			<div class="option" onclick="linkHome()">Home</div>
- 			<div class="option" onclick="linkWatch()">Watchlist</div>
- 			<div class="option" onclick="linkPort()">Portfolio</div>
- 			<div class="option" onclick="linkGame()">Games</div>
+			<div class="option" onclick="linkHome()">Home</div>
+			<div class="option" onclick="linkWatch()">Watchlist</div>
+			<div class="option" onclick="linkPort()">Portfolio</div>
+			<div class="option" onclick="linkGame()">Games</div>
 			<div class="option" onclick="linkDash()">Dashboard</div>
- 			<div class="option sign" onclick="signIn()">Sign In</div>
-             
- 	    </div>
-         <script>
-             displayPin()
-         </script>
-         <div id="Pinned" style="width: 100%;height: 1200px; margin:0 auto;"></div>
-    </body>
+			<div class="option sign" onclick="signIn()">Sign In</div>
+		</div>
+		<div id="scroll-container">
+			<div class="title">Your Watchlist</div>
+			<div class="sdisp" id="watch">
+				<div class="lpos"><div class="loader"></div></div>
+			</div>
+			<div class="title">Other Owned Stocks:</div>
+			<div class="sdisp" id="owned">
+				<div class="lpos"><div class="loader"></div></div>
+			</div>
+		</div>
+		<script>
+			var firebaseConfig = {
+				apiKey: "AIzaSyDlzAoiTs11V-ujyslFbrwTA2J_eEtp9ns",
+				authDomain: "stonks-app-f9c3e.firebaseapp.com",
+				databaseURL: "https://stonks-app-f9c3e-default-rtdb.firebaseio.com",
+				projectId: "stonks-app-f9c3e",
+				storageBucket: "stonks-app-f9c3e.appspot.com",
+				messagingSenderId: "100026423595",
+				appId: "1:100026423595:web:0f7ef98980ef4019930d6e",
+				measurementId: "G-B76TGRT1K9"
+			};
+			
+			firebase.initializeApp(firebaseConfig);
+			
+			var database = firebase.database();
+			var auth = firebase.auth();
+			
+			var thisUser = undefined;
+			var u_stocks = {};
+			
+			auth.onAuthStateChanged(user => {
+				thisUser = user;
+				if(thisUser == null){
+					signIn();
+				}else{
+					database.ref("users/" + thisUser.uid + "/ownedStocks").once("value", function(e){
+						if(e.val() == null || e.val() == undefined)
+							u_stocks = {}
+						else
+							u_stocks = e.val();
+						
+						displayStocks();
+					});
+				}
+			});
+			
+			function linkHome(){
+				window.location.href = "";
+			}
+			
+			function linkWatch(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "watchlist.html";
+			}
+			
+			function linkPort(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "portfolio.html";
+			}
+			
+			function linkGame(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "game.html";
+			}
+			
+			function linkDash(){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "dashboardREAL.html";
+			}
+			
+			function linkSearch(q){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "search.html" + (q ? "?symbol=" + q : "");
+			}
+			
+			function signIn(){
+				window.location.href = "sign in/google_auth.html";
+			}
+			
+			var watchlist = document.getElementById("watch");
+			var owned = document.getElementById("owned");
+			function displayStocks(){
+				watchlist.innerHTML = "";
+				owned.innerHTML = "";
+				var wempty = true;
+				var oempty = true;
+				for(var s in u_stocks){
+					if(!(u_stocks[s].watch || u_stocks[s].shares))
+						continue;
+					var d = document.createElement("DIV");
+					d.className = "graph";
+					d.innerHTML = "<div class='lpos'><div class='loader'></div></div>";
+					(u_stocks[s].watch ? watchlist : owned).appendChild(d);
+					loadGraph(d, s);
+					
+					if(u_stocks[s].watch) wempty = false;
+					else oempty = false;
+				}
+				
+				if(wempty)
+					watchlist.innerHTML = "<div class='hint'>Looks like you don't have anything on your watchlist, why not <span class='link' onclick='linkSearch()'>search</span> and find some?</div>";
+				if(oempty){
+					document.getElementsByClassName("title")[1].outerHTML = "";
+					document.getElementById("owned").outerHTML = "";
+				}
+			}
+			// u_stocks = {
+			// 	AAPL: {watch: false, shares: 1},
+			// 	GOOG: {watch: true, shares: 0},
+			// 	GME: {watch: false, shares: 1},
+			// 	T: {watch: false, shares: 1},
+			// 	STALL_TEST: {watch: true, shares: 0},
+			// 	Y: {watch: true, shares: 0},
+			// 	A: {watch: true, shares: 1},
+			// 	AA: {watch: true, shares: 0}
+			// }
+			// displayStocks();
+			
+			function loadGraph(div, symbol){
+				if(symbol == "STALL_TEST") return;
+				var req = new XMLHttpRequest();
+				var end = Math.floor(Date.now() / 1000), start = end - 365*24*60*60;
+				
+				req.onload = function(e){
+					// loader2.style.display = "none";
+					var re = JSON.parse(req.response);
+					
+					// if(re.s == "no_data"){
+					// 	document.getElementById("error").style.display = "block";
+					// 	return;
+					// }
+					for(var i in re.t)
+						re.t[i] = (new Date(re.t[i] * 1000)).toGMTString();
+					
+					var trace = {
+						x: re.t,
+						close: re.c,
+						high: re.h,
+						low: re.l,
+						open: re.o,
+						type: 'candlestick',
+						// xaxis: 'x',
+						// yaxis: 'y',
+						// increasing: {line: {color: 'black'}},
+						// decreasing: {line: {color: 'red'}},
+					}
+					var layout = {
+						yaxis: {fixedrange: true},
+			        		xaxis: {fixedrange: true, rangeslider: { visible: false } },
+						showlegend: false,
+						paper_bgcolor: "#EEE",
+						plot_bgcolor: "#EEE",
+						title: symbol
+					}
+					div.innerHTML = "";
+					div.onclick = function(){ linkSearch(symbol) };
+					Plotly.newPlot(div, [trace], layout, {displayModeBar: false});
+				}
+				req.open("GET", `https://vast-falls-84529.herokuapp.com/?method=candle&symbol=${symbol}&resolution=W&from=${start}&to=${end}`);
+				req.send();
+			}
+		</script>
+	</body>
 </html>

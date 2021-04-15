@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-database.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.58.4/plotly.min.js"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap" rel="stylesheet">
+		<style>
+			:root{
+				--accent: #2e90f2;
+			}
+			*{
+				font-family: Roboto;
+				user-select: none;
+			}
+			body{
+				background: #EEE;
+				overflow: hidden;
+			}
+			#navbar{
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				background: #333;
+				color: white;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				border-bottom: .5vmin solid #222;
+				z-index: 1;
+			}
+			.option{
+				display: inline-block;
+			/* 	height: 10vmin; */
+				cursor: pointer;
+				font-size: 3vmin;
+				width: 20vmin;
+				text-align: center;
+				height: 6vmin;
+				line-height: 6vmin;
+				margin: 0;
+				padding: 0;
+				border-bottom: 0vmin solid var(--accent);
+				box-sizing: border-box;
+				transition: border .15s;
+			}
+			.option:hover{
+			/* 	background: #222; */
+				border-bottom: 6vmin solid var(--accent);
+			}
+			.sign{
+				position: absolute;
+				right: 0;
+			}
+			#logo{
+				display: inline-block;
+				background: white;
+				color: #333;
+				height: 5vmin;
+				width: 5vmin;
+				text-align: center;
+				border-radius: 100%;
+				vertical-align: middle;
+				line-height: 5vmin;
+				font-size: 5vmin;
+				margin-left: 4vmin;
+				margin-right: 4vmin;
+				transform: translateY(.5vmin);
+				cursor: pointer;
+				transition: background .15s, transform .15s;
+			}
+			#logo:hover{
+				background: var(--accent);
+				transform: translateY(.5vmin) rotate(-45deg);
+			/* 	color: white; */
+			/* 	border: .4vmin solid white; */
+				
+			/* 	box-sizing: border-box; */
+				
+			}
+			::-webkit-scrollbar {
+			  width: 2vmin;
+				
+			}
+			
+			::-webkit-scrollbar-track {
+			  background: transparent; 
+			}
+			
+			::-webkit-scrollbar-thumb {
+			  background: #888;
+			}
+			
+			/* Handle on hover */
+			::-webkit-scrollbar-thumb:hover {
+			  background: #555;
+			}
+			
+			@keyframes spinner{
+				0%{
+					transform: rotate(.375turn);
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 25%, 50% 50%, 75% 0%);
+				}
+				50%{
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 200%, 50% 50%, -100% 0%);
+				}
+				100%{
+					transform: rotate(2.375turn);
+					clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 25%, 50% 50%, 75% 0%);
+				}
+			}
+			
+			.loader{
+				width: 6vmin;
+				height: 6vmin;
+				border: 1vmin solid #888;
+				border-radius: 100%;
+				clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 50%, 50% 50%, 50% 0%);
+				animation: spinner 2s infinite linear;
+				display: inline-block;
+			}
+			.lpos{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%,-50%);
+			}
+			.title{
+				margin-top: 8vmin;
+				text-align: center;
+				font-size: 8vmin;
+				color: #333;
+				width: 70vw;
+			}
+			.sdisp{
+				min-height: 90vh;
+				text-align: center;
+				position: relative;
+			}
+			#scroll-container{
+				position: fixed;
+				top: 0; left: 0;
+				height: 100vh;
+				width: 100vw;
+				overflow-y: scroll;
+			}
+			.hint{
+				height: 100%;
+				width: 100%;
+				text-align: center;
+				vertical-align: middle;
+				line-height: 90vh;
+				font-size: 2.5vmin;
+				color: #888;
+			}
+			.link{
+				font-weight: bold;
+				color: var(--accent);
+				cursor: pointer;
+				text-decoration: underline;
+			}
+			#miniw{
+				position: absolute;
+				top: 16vmin;
+				left: 0;
+				bottom: 0;
+				right: 30vw;
+			}
+			#reddit{
+				position: absolute;
+				top: 8vmin;
+				left: 70vw;
+				bottom: 1.5vmin;
+				right: 1.5vmin;
+				border: .5vmin solid #888;
+				border-radius: 4vmin;
+				padding: 2vmin;
+				overflow: hidden;
+			}
+			.rline{
+				color: #333;
+				margin-bottom: 2vmin;
+				cursor: pointer;
+			}
+			.light{
+				color: #888;
+			}
+			@keyframes scroll{
+				from{ transform: translateY(-25%); }
+				to{ transform: translateY(-75%); }
+			}
+			#scrollr{
+				animation: scroll 30s infinite linear;
+			}
+			#search{
+				display: inline-block;
+				background: var(--accent);
+				color: white;
+				padding: 1vmin;
+				border-radius: .7vmin;
+				cursor: pointer;
+				position: absolute;
+				top: 8vmin;
+				left: -30vmin;
+				transition: left .3s;
+			}
+			#search.open{
+				left: 1.5vmin;
+			}

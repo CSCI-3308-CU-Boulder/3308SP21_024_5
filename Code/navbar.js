@@ -91,10 +91,16 @@
 				window.location.href = "dashboardREAL.html";
 			}
 
-			function signIn(){
-				window.location.href = "sign in/google_auth.html";
+			function linkSearch(q){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "search.html" + (q ? "?symbol=" + q : "");
 			}
 
-			function watchlist(){
-				window.location.herf = "watchlist.html"
+			function signIn(){
+				window.location.href = "sign in/google_auth.html";
 			}

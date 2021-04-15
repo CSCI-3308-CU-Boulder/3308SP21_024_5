@@ -411,6 +411,16 @@
 							u_stocks = {}
 						else
 							u_stocks = e.val();
+						if(location.href.includes("?symbol=")){
+							var sy = location.href.split("?symbol=")[1];
+							// var se = document.getElementById("search");
+							// se.value = sy;
+							// search(se);
+							var res = document.createElement("DIV");
+							res.onclick = loadGraph;
+							res.innerHTML = sy + "<p> </p>";
+							res.onclick();
+						}
 					});
 				}
 			});
@@ -495,84 +505,90 @@
 					var r = document.createElement("DIV");
 					r.className = "res";
 					r.innerHTML = `${resp.result[i].symbol}<span class="sub">${resp.result[i].description}</span>`;
-					r.onclick = function(){
-						Plotly.purge("graph");
-						
-						var c = document.getElementsByClassName("res selected");
-						if(c && c[0]){
-							if(c[0] == this){
-								c[0].className = "res";
-								document.getElementById("menu").style.transform = "";
-								return;
-							}
-							c[0].className = "res";
-						}
-						this.className = "res selected";
-						
-						var req = new XMLHttpRequest();
-						var end = Math.floor(Date.now() / 1000), start = end - 365*24*60*60;
-						
-						var title = this.innerHTML.split("<")[0] + " - " + this.innerHTML.split(">")[1].split("<")[0];
-						
-						document.getElementById("error").style.display = "none";
-						
-						req.abort();
-						req.onload = function(e){
-							loader2.style.display = "none";
-							var re = JSON.parse(req.response);
-							
-							if(re.s == "no_data"){
-								document.getElementById("error").style.display = "block";
-								return;
-							}
-							for(var i in re.t)
-								re.t[i] = (new Date(re.t[i] * 1000)).toGMTString();
-							
-							var trace = {
-								x: re.t,
-								close: re.c,
-								high: re.h,
-								low: re.l,
-								open: re.o,
-								type: 'candlestick',
-								// xaxis: 'x',
-								// yaxis: 'y',
-								// increasing: {line: {color: 'black'}},
-								// decreasing: {line: {color: 'red'}},
-							}
-							var layout = {
-								dragmode: 'zoom',
-								showlegend: false,
-								xaxis: {
-									rangeslider: {
-										visible: false
-									}
-								},
-								paper_bgcolor: "#EEE",
-								plot_bgcolor: "#EEE",
-								title: title
-							}
-							
-							Plotly.newPlot("graph", [trace], layout, {displayModeBar: false});
-							
-							// document.getElementById("menu").style.display = "block";
-							getValue(currentStock);
-							document.getElementById("menu").style.transform = "translateX(0)";
-						}
-						req.open("GET", `https://vast-falls-84529.herokuapp.com/?method=candle&symbol=${this.innerHTML.split("<")[0].replace(".", "%2e")}&resolution=15&from=${start}&to=${end}`);
-						req.send();
-						
-						currentStock = this.innerHTML.split("<")[0].replace(".", "%2e");
-						
-						loader2.style.display = "block";
-						document.getElementById("menu").style.transform = "";
-					}
+					r.onclick = loadGraph;
 					results.appendChild(r);
 				}
 				loader.style.display = "none";
 				
 				if(document.getElementsByClassName("res").length == 0)
 					results.innerHTML = '<div class="nres">No results.</div>';
+			}
+			
+			function loadGraph(tt){
+				Plotly.purge("graph");
+				
+				if(this) tt = this;
+				
+				var c = document.getElementsByClassName("res selected");
+				if(c && c[0]){
+					if(c[0] == tt){
+						c[0].className = "res";
+						document.getElementById("menu").style.transform = "";
+						return;
+					}
+					c[0].className = "res";
+				}
+				tt.className = "res selected";
+				
+				var req = new XMLHttpRequest();
+				var end = Math.floor(Date.now() / 1000), start = end - 365*24*60*60;
+				
+				var title = tt.innerHTML.split("<")[0] + " - " + tt.innerHTML.split(">")[1].split("<")[0];
+				
+				document.getElementById("error").style.display = "none";
+				
+				req.abort();
+				req.onload = function(e){
+					loader2.style.display = "none";
+					var re = JSON.parse(req.response);
+					
+					if(re.s == "no_data"){
+						document.getElementById("error").style.display = "block";
+						return;
+					}
+					for(var i in re.t)
+						re.t[i] = (new Date(re.t[i] * 1000)).toGMTString();
+					
+					var trace = {
+						x: re.t,
+						close: re.c,
+						high: re.h,
+						low: re.l,
+						open: re.o,
+						type: 'candlestick',
+						// xaxis: 'x',
+						// yaxis: 'y',
+						// increasing: {line: {color: 'black'}},
+						// decreasing: {line: {color: 'red'}},
+					}
+					var layout = {
+						dragmode: 'zoom',
+						showlegend: false,
+						xaxis: {
+							rangeslider: {
+								visible: false
+							}
+						},
+						paper_bgcolor: "#EEE",
+						plot_bgcolor: "#EEE",
+						title: title
+					}
+					
+					Plotly.newPlot("graph", [trace], layout, {displayModeBar: false});
+					
+					// document.getElementById("menu").style.display = "block";
+					getValue(currentStock);
+					document.getElementById("menu").style.transform = "translateX(0)";
+				}
+				req.open("GET", `https://vast-falls-84529.herokuapp.com/?method=candle&symbol=${tt.innerHTML.split("<")[0].replace(".", "%2e")}&resolution=15&from=${start}&to=${end}`);
+				req.send();
+				
+				currentStock = tt.innerHTML.split("<")[0].replace(".", "%2e");
+				
+				loader2.style.display = "block";
+				document.getElementById("menu").style.transform = "";
+				
+				fav.className = (u_stocks[currentStock] && u_stocks[currentStock].watch ? "select" : "");
 			}
 			
 			function search(e){
@@ -591,6 +607,14 @@
 			var fav = document.getElementById("fav");
 			function favorite(){
 				fav.className = fav.className == "" ? "select" : "";
+				if(!u_stocks[currentStock])
+					u_stocks[currentStock] = {
+						shares: 0,
+						watch: false
+					}
+				u_stocks[currentStock].watch = !u_stocks[currentStock].watch;
+				
+				database.ref("users/" + thisUser.uid + "/ownedStocks/" + currentStock).set(u_stocks[currentStock]);
 			}
 			
 			var pmenu = document.getElementById("purchase");
@@ -614,7 +638,7 @@
 					this.value = this.value.substring(0, this.value.length - 1);
 				while(action == 1 && parseFloat(this.value) > (u_stocks[currentStock] ? u_stocks[currentStock].shares : 0))
 					this.value = this.value.substring(0, this.value.length - 1);
-				console.log(parseFloat(this.value));
+				// console.log(parseFloat(this.value));
 				
 				var n = parseFloat(this.value);
 				if(isNaN(n)) n = 0;

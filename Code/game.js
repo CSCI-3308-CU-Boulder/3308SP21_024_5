@@ -1,8 +1,10 @@
 var store =  []
-var date = [0,1,2,3,4]
+var date = [0]
 var to_cancel
 var count_day = 4
 var buy_price
+var length = 0
+var profir = 0
 //var x = []
 //'https://finnhub.io/api/v1/stock/candle?symbol='+password+'&resolution=1&from='+start+'&to='+end+'&token=c141b3f48v6s4a2e21p0'
 function startLoop(){
@@ -11,9 +13,14 @@ function startLoop(){
     var start = document.getElementById('start-date').value + ' 00:00:00'
     //var end = '2021-04-01 00:00:00'
     var end = document.getElementById('end-date').value + ' 00:00:00'
-   
+
     var stamp_start = parseInt(new Date (start).getTime() / 1000)
     const myChart = echarts.init(document.getElementById('main'));
+    if(date.length > 1){
+      myChart.clear()
+      date = [0]
+      profit = 0
+    }
     var stamp_end = parseInt(new Date(end).getTime() / 1000)
     var url = 'https://finnhub.io/api/v1/stock/candle?symbol='+password+'&resolution=D&from='+stamp_start+'&to='+stamp_end+'&token=c141b3f48v6s4a2e21p0'
     //console.log(url)
@@ -31,9 +38,12 @@ function startLoop(){
         store.push([data1[i], data2[i], data3[i], data4[i]])
       
       }
+      length = data1.length
+      console.log(length)
     }else{
       console.log("error")
     }
+    
     console.log(store[0][0])
     buy_price = store[0][0]
     //console.log(data1)
@@ -45,7 +55,9 @@ function startLoop(){
                     height: 600
                 })
         option = {
+          backgroundColor: '#333333',
         toolbox: { feature: { saveAsImage: {} } },
+        //darkMode: true;
         xAxis: { type: 'category', data: date },
         yAxis: { type: 'value' },
         series: [
@@ -61,7 +73,10 @@ function startLoop(){
     //console.log(store)
     //console.log(store[0])
     request.send()
+    
     to_cancel = setInterval(function(){painting(myChart, store, date)},500)
+    
+    
 }
 
 function painting(myChart, store, date){
@@ -80,6 +95,9 @@ function painting(myChart, store, date){
   };
   myChart.setOption(option);
   count_day ++
+  if(date.length >= length){
+    endLoop()
+  }
 }
 
   
@@ -101,8 +119,10 @@ function calProfit(){
   }else{
       amount = temp
   }
-  var profit = amount * (sell_price - buy_price)
+  profit = amount * (sell_price - buy_price)
+  
   document.getElementById("output_profit").innerHTML = profit.toFixed(2) + "$"
+  $("#exampleModal").modal('toggle')
 }
 //date.push(5)
 //console.log("in js", store)

@@ -4,14 +4,16 @@
 //LTCUSDT
 //BCHUSDT
 var store =  []
-var date = [0,1,2,3,4]
+var date = [0]
 var to_cancel
 var count_day = 4
 var buy_price
+var length = 0
+var profit = 0
 //var x = []
 //'https://finnhub.io/api/v1/stock/candle?symbol='+password+'&resolution=1&from='+start+'&to='+end+'&token=c141b3f48v6s4a2e21p0'
 function startLoop(){
-    
+
     //var start = '2021-01-01 00:00:00'
     var start = document.getElementById('start-date').value + ' 00:00:00'
     //var end = '2021-04-01 00:00:00'
@@ -34,6 +36,11 @@ function startLoop(){
     }
     var stamp_start = parseInt(new Date (start).getTime() / 1000)
     const myChart = echarts.init(document.getElementById('main'));
+    if(date.length > 1){
+      myChart.clear()
+      date = [0]
+      profit = 0
+    }
     var stamp_end = parseInt(new Date(end).getTime() / 1000)
     var url = 'https://finnhub.io/api/v1/crypto/candle?symbol='+password+'&resolution=D&from='+stamp_start+'&to='+stamp_end+'&token=c141b3f48v6s4a2e21p0'
     //var url = 'https://finnhub.io/api/v1/stock/candle?symbol='+password+'&resolution=D&from='+stamp_start+'&to='+stamp_end+'&token=c141b3f48v6s4a2e21p0'
@@ -52,6 +59,7 @@ function startLoop(){
         store.push([data1[i], data2[i], data3[i], data4[i]])
       
       }
+      length = data1.length
     }else{
       console.log("error")
     }
@@ -66,6 +74,8 @@ function startLoop(){
                     height: 600
                 })
         option = {
+          //: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+          //√darkMode: true,
         toolbox: { feature: { saveAsImage: {} } },
         xAxis: { type: 'category', data: date },
         yAxis: { type: 'value' },
@@ -83,6 +93,8 @@ function startLoop(){
     //console.log(store[0])
     request.send()
     to_cancel = setInterval(function(){painting(myChart, store, date)},500)
+    
+    
 }
 
 function painting(myChart, store, date){
@@ -101,6 +113,9 @@ function painting(myChart, store, date){
   };
   myChart.setOption(option);
   count_day ++
+  if(date.length >= length){
+    endLoop()
+  }
 }
 
   
@@ -112,8 +127,8 @@ function endLoop(){
 //calculate the profit
 function calProfit(){
   sell_price = store[count_day-1][1]
-  console.log(sell_price)
-  console.log(buy_price)
+  //console.log(sell_price)
+  //console.log(buy_price)
   profit = 0
   temp = document.getElementById("user-amount").value
   if(!temp){
@@ -121,8 +136,10 @@ function calProfit(){
   }else{
       amount = temp
   }
-  var profit = amount * (sell_price - buy_price)
+  profit = amount * (sell_price - buy_price)
+  console.log(profit)
   document.getElementById("output_profit").innerHTML = profit.toFixed(2) + "$"
+  $("#exampleModal").modal('toggle')
 }
 //date.push(5)
 //console.log("in js", store)

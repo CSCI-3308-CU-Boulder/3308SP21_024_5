@@ -132,7 +132,7 @@
 			});
 			
 			function linkHome(){
-				window.location.href = "";
+				window.location.href = "landing_page.html";
 			}
 			
 			function linkWatch(){
@@ -175,6 +175,16 @@
 				window.location.href = "dashboardREAL.html";
 			}
 			
+			function linkSearch(q){
+				if(thisUser === undefined)
+					return;
+				if(thisUser === null){
+					signIn();
+					return;
+				}
+				window.location.href = "search.html" + (q ? "?symbol=" + q : "");
+			}
+			
 			function signIn(){
 				window.location.href = "sign in/google_auth.html";
 			}
@@ -186,9 +196,9 @@
 			<div id="logo" onclick="linkHome()">S</div>
 			<div class="option" onclick="linkHome()">Home</div>
 			<div class="option" onclick="linkWatch()">Watchlist</div>
-			<div class="option" onclick="linkPort()">Portfolio</div>
+<!-- 			<div class="option" onclick="linkPort()">Portfolio</div> -->
 			<div class="option" onclick="linkGame()">Games</div>
-			<div class="option" onclick="linkDash()">Dashboard</div>
+			<div class="option" onclick="linkSearch()">Search</div>
 			<div class="option sign" onclick="signIn()">Sign In</div>
 		</div>
 		<div id="splash">completely free,<br/>virtual trading platform</div>

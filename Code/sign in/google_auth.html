@@ -53,10 +53,10 @@
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
           document.getElementById("firebase-ui").style.display = "none";
           console.log(authResult);
-          database.ref("users/" + authResult.user.uid).set({
+          database.ref("users/" + authResult.user.uid + "/user").set({
             name: authResult.user.displayName
           }, function(e) {
-            window.location.href = "../dashboardREAL.html"
+            window.location.href = "../dashboard.html"
           });
           return false;
         },

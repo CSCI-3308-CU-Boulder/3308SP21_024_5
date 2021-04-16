@@ -129,7 +129,11 @@
 			
 			auth.onAuthStateChanged(user => {
 				thisUser = user;
-				console.log(thisUser);
+				if(thisUser == null){
+					
+				}else{
+					document.getElementsByClassName("sign")[0].outerHTML = "";
+				}
 			});
 			
 			function linkHome(){

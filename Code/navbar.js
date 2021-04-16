@@ -88,7 +88,7 @@
 					signIn();
 					return;
 				}
-				window.location.href = "dashboardREAL.html";
+				window.location.href = "dashboard.html";
 			}
 
 			function linkSearch(q){
